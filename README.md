@@ -1,4 +1,4 @@
-# 🎵 SONQIVA
+# 🎵 SONQIVA MUSIC
 
 > **Native, Offline-First Android Music Player for Local Files**  
 > *Atmospheric Glassmorphic UI • Near-Black OLED Theme • Zero Cloud Dependencies • Zero Trackers • Zero Ads*
