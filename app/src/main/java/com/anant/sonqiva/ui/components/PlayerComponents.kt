@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import java.util.Locale
 import coil.compose.AsyncImage
 import com.anant.sonqiva.data.model.PlaybackState
 import com.anant.sonqiva.ui.theme.GlassBackgroundLight
@@ -198,9 +199,9 @@ fun SonqivaSeekBar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             val totalSecCur = positionMs / 1000
-            val curFormatted = String.format("%d:%02d", totalSecCur / 60, totalSecCur % 60)
+            val curFormatted = String.format(Locale.US, "%d:%02d", totalSecCur / 60, totalSecCur % 60)
             val totalSecDur = durationMs / 1000
-            val durFormatted = String.format("%d:%02d", totalSecDur / 60, totalSecDur % 60)
+            val durFormatted = String.format(Locale.US, "%d:%02d", totalSecDur / 60, totalSecDur % 60)
 
             Text(
                 text = curFormatted,

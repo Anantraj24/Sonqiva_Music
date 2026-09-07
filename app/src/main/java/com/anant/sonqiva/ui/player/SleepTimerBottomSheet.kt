@@ -30,6 +30,7 @@ import com.anant.sonqiva.ui.theme.OnSurface
 import com.anant.sonqiva.ui.theme.OnSurfaceVariant
 import com.anant.sonqiva.ui.theme.PrimaryAccent
 import com.anant.sonqiva.ui.theme.SurfaceDark
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -79,7 +80,7 @@ fun SleepTimerBottomSheet(
                         val mins = remainingSeconds / 60
                         val secs = remainingSeconds % 60
                         Text(
-                            text = "Active • Stops in ${String.format("%d:%02d", mins, secs)}",
+                            text = "Active • Stops in ${String.format(Locale.US, "%d:%02d", mins, secs)}",
                             style = MaterialTheme.typography.bodySmall,
                             color = PrimaryAccent
                         )

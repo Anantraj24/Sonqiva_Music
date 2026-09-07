@@ -1,6 +1,7 @@
 package com.anant.sonqiva.data.model
 
 import android.net.Uri
+import java.util.Locale
 
 data class Song(
     val id: Long,
@@ -28,9 +29,9 @@ data class Song(
             return if (minutes >= 60) {
                 val hours = minutes / 60
                 val remMinutes = minutes % 60
-                String.format("%d:%02d:%02d", hours, remMinutes, seconds)
+                String.format(Locale.US, "%d:%02d:%02d", hours, remMinutes, seconds)
             } else {
-                String.format("%d:%02d", minutes, seconds)
+                String.format(Locale.US, "%d:%02d", minutes, seconds)
             }
         }
 }

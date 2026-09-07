@@ -1,6 +1,7 @@
 package com.anant.sonqiva.data.model
 
 import android.net.Uri
+import java.util.Locale
 
 data class Album(
     val id: Long,
@@ -59,7 +60,7 @@ data class PlaybackState(
             val totalSeconds = currentPositionMs / 1000
             val minutes = totalSeconds / 60
             val seconds = totalSeconds % 60
-            return String.format("%d:%02d", minutes, seconds)
+            return String.format(Locale.US, "%d:%02d", minutes, seconds)
         }
 
     val formattedDuration: String
@@ -67,7 +68,7 @@ data class PlaybackState(
             val totalSeconds = durationMs / 1000
             val minutes = totalSeconds / 60
             val seconds = totalSeconds % 60
-            return String.format("%d:%02d", minutes, seconds)
+            return String.format(Locale.US, "%d:%02d", minutes, seconds)
         }
 
     val formattedSleepTimer: String?
@@ -75,6 +76,6 @@ data class PlaybackState(
             val sec = sleepTimerRemainingSeconds ?: return null
             val mins = sec / 60
             val remSec = sec % 60
-            return String.format("%d:%02d", mins, remSec)
+            return String.format(Locale.US, "%d:%02d", mins, remSec)
         }
 }
