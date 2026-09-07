@@ -1,0 +1,24 @@
+{
+  "name": "sonqiva",
+  "version": "1.0.0",
+  "description": "> **Native, Offline-First Android Music Player for Local Files**   > *Atmospheric Glassmorphic UI • Near-Black OLED Theme • Zero Cloud Dependencies • Zero Trackers • Zero Ads*",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Anantraj24/Sonqiva.git"
+  },
+  "keywords": [],
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Anantraj24/Sonqiva/issues"
+  },
+  "homepage": "https://github.com/Anantraj24/Sonqiva#readme",
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.63.0",
+    "axe-core": "^4.13.0"
+  }
+}

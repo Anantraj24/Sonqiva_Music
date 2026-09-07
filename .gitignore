@@ -16,3 +16,7 @@ app/build/
 .cxx
 local.properties
 .vscode/
+node_modules/
+test-results/
+web-preview/.playwright-report/
+web-preview/.playwright-results/
