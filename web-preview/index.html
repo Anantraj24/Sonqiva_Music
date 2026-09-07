@@ -104,7 +104,7 @@
                         <!-- Featured Albums Carousel -->
                         <div class="section-container">
                             <h3 class="section-title">Albums</h3>
-                            <div class="carousel-container" id="home-albums-carousel"></div>
+                            <div class="carousel-container" id="home-albums-carousel" tabindex="0" role="region" aria-label="Albums"></div>
                         </div>
 
                         <!-- Recently Added -->
@@ -120,12 +120,12 @@
                             <h2 class="screen-title">Your Library</h2>
                         </div>
                         <!-- Library Tabs -->
-                        <div class="tab-bar-container">
-                            <div class="tab-item active" data-tab="songs">Songs (<span id="count-songs">0</span>)</div>
-                            <div class="tab-item" data-tab="favorites">Favorites (<span id="count-favs">0</span>)</div>
-                            <div class="tab-item" data-tab="albums">Albums (<span id="count-albums">0</span>)</div>
-                            <div class="tab-item" data-tab="artists">Artists (<span id="count-artists">0</span>)</div>
-                            <div class="tab-item" data-tab="playlists">Playlists (<span id="count-playlists">0</span>)</div>
+                        <div class="tab-bar-container" id="tab-bar" role="tablist" aria-label="Library tabs" tabindex="0">
+                            <div class="tab-item active" role="tab" aria-selected="true" tabindex="0" data-tab="songs">Songs (<span id="count-songs">0</span>)</div>
+                            <div class="tab-item" role="tab" aria-selected="false" tabindex="0" data-tab="favorites">Favorites (<span id="count-favs">0</span>)</div>
+                            <div class="tab-item" role="tab" aria-selected="false" tabindex="0" data-tab="albums">Albums (<span id="count-albums">0</span>)</div>
+                            <div class="tab-item" role="tab" aria-selected="false" tabindex="0" data-tab="artists">Artists (<span id="count-artists">0</span>)</div>
+                            <div class="tab-item" role="tab" aria-selected="false" tabindex="0" data-tab="playlists">Playlists (<span id="count-playlists">0</span>)</div>
                         </div>
 
                         <!-- Songs Tab Panel -->
@@ -201,7 +201,7 @@
                         <!-- Search Bar -->
                         <div class="search-bar-card glass">
                             <span class="material-symbols-rounded">search</span>
-                            <input type="text" id="search-input" placeholder="Search tracks, artists, albums..." autocomplete="off">
+                            <input type="text" id="search-input" aria-label="Search" placeholder="Search tracks, artists, albums..." autocomplete="off">
                             <button class="icon-btn" id="search-clear-btn" style="display:none;">
                                 <span class="material-symbols-rounded">close</span>
                             </button>
@@ -246,7 +246,7 @@
                                     </div>
                                 </div>
                                 <label class="switch">
-                                    <input type="checkbox" id="low-memory-toggle" checked>
+                                    <input type="checkbox" id="low-memory-toggle" aria-label="Low Memory Mode" checked>
                                     <span class="slider"></span>
                                 </label>
                             </div>
@@ -259,7 +259,7 @@
                                     </div>
                                 </div>
                                 <label class="switch">
-                                    <input type="checkbox" id="auto-resume-toggle" checked>
+                                    <input type="checkbox" id="auto-resume-toggle" aria-label="Auto-Resume Playback" checked>
                                     <span class="slider"></span>
                                 </label>
                             </div>
@@ -396,7 +396,7 @@
 
                         <!-- Seek Bar & Timing -->
                         <div class="player-seek-container">
-                            <input type="range" id="seek-slider" min="0" max="100" value="0" step="0.1">
+                            <input type="range" id="seek-slider" aria-label="Seek position" min="0" max="100" value="0" step="0.1">
                             <div class="player-time-row">
                                 <span id="time-current">0:00</span>
                                 <span id="time-duration">0:00</span>
@@ -579,7 +579,7 @@
                 <div class="bottom-sheet-overlay" id="playlist-dialog-overlay">
                     <div class="modal-dialog glass">
                         <h3 id="playlist-dialog-title">Create New Playlist</h3>
-                        <input type="text" id="playlist-name-input" placeholder="Playlist Name" class="dialog-input">
+                        <input type="text" id="playlist-name-input" aria-label="Playlist name" placeholder="Playlist Name" class="dialog-input">
                         <div class="dialog-actions-row">
                             <button class="btn btn-secondary" id="dialog-cancel-btn">Cancel</button>
                             <button class="btn btn-primary" id="dialog-confirm-btn">Create</button>

@@ -1398,3 +1398,33 @@ input:checked + .slider:before {
     font-weight: 600;
     color: var(--on-surface);
 }
+
+/* ==========================================================================
+   MOBILE FILL MODE (small viewports): the preview becomes a full-screen app
+   ========================================================================== */
+
+@media (max-width: 520px) {
+    .app-header {
+        display: none;
+    }
+
+    .viewport-container {
+        padding: 0;
+        overflow: hidden;
+    }
+
+    .device-frame,
+    .device-frame.full-width-mode {
+        width: 100%;
+        max-width: none;
+        height: 100vh;
+        height: 100dvh;
+        border-radius: 0;
+        box-shadow: none;
+        border: none;
+    }
+
+    body {
+        overflow: hidden;
+    }
+}

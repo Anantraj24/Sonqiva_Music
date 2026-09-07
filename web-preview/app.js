@@ -471,6 +471,9 @@ function createSongRow(song) {
 
     const div = document.createElement("div");
     div.className = `song-row ${isCurrent ? 'active' : ''}`;
+    div.setAttribute("role", "group");
+    div.setAttribute("tabindex", "0");
+    div.setAttribute("aria-label", `Play ${song.title} by ${song.artist}`);
     div.innerHTML = `
         <div class="song-art-mini">
             <span class="material-symbols-rounded">${isPlaying ? 'equalizer' : 'music_note'}</span>
@@ -480,7 +483,7 @@ function createSongRow(song) {
             <div class="song-artist-album">${song.artist} • ${song.album}</div>
         </div>
         <div class="song-duration">${song.formattedDuration}</div>
-        <button class="song-action-btn" data-song-id="${song.id}">
+        <button class="song-action-btn" data-song-id="${song.id}" aria-label="More options for ${song.title}">
             <span class="material-symbols-rounded">more_vert</span>
         </button>
     `;
@@ -490,6 +493,13 @@ function createSongRow(song) {
             e.stopPropagation();
             openActionSheet(song);
         } else {
+            playSong(song);
+        }
+    });
+    div.addEventListener("keydown", (e) => {
+        if (e.target.closest(".song-action-btn")) return;
+        if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
             playSong(song);
         }
     });
@@ -807,15 +817,39 @@ function switchScreen(screenId) {
 }
 
 // --- MODALS & BOTTOM SHEETS ---
+let lastFocusedElement = null;
+
+function openSheet(id) {
+    const overlay = document.getElementById(id);
+    lastFocusedElement = document.activeElement;
+    overlay.classList.add("open");
+    const focusables = overlay.querySelectorAll(
+        'button, [href], input, select, textarea, [role="button"], [tabindex]:not([tabindex="-1"])'
+    );
+    const first = focusables[0];
+    if (first) first.focus();
+    else {
+        overlay.setAttribute("tabindex", "-1");
+        overlay.focus();
+    }
+}
+
 function openActionSheet(song) {
     activeActionSong = song;
     document.getElementById("sheet-song-title").innerText = song.title;
     document.getElementById("sheet-song-artist").innerText = `${song.artist} • ${song.album}`;
-    document.getElementById("actions-sheet").classList.add("open");
+    openSheet("actions-sheet");
 }
 
 function closeAllSheets() {
+    const hadOpen = document.querySelector(".bottom-sheet-overlay.open") !== null ||
+        document.getElementById("full-player-modal").classList.contains("open");
     document.querySelectorAll(".bottom-sheet-overlay").forEach(el => el.classList.remove("open"));
+    document.getElementById("full-player-modal").classList.remove("open");
+    if (hadOpen && lastFocusedElement && document.contains(lastFocusedElement)) {
+        lastFocusedElement.focus();
+    }
+    lastFocusedElement = null;
 }
 
 // --- EVENT BINDINGS ---
@@ -836,14 +870,34 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Library Tabs
-    document.querySelectorAll(".tab-item").forEach(tab => {
-        tab.addEventListener("click", () => {
-            document.querySelectorAll(".tab-item").forEach(t => t.classList.remove("active"));
-            document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
-            tab.classList.add("active");
-            document.getElementById(`panel-${tab.dataset.tab}`).classList.add("active");
+    const tabs = Array.from(document.querySelectorAll(".tab-item"));
+    const setTabState = (el, on) => {
+        el.classList.toggle("active", on);
+        el.setAttribute("aria-selected", on ? "true" : "false");
+        el.tabIndex = on ? 0 : -1;
+    };
+    const activateTab = (tab, shouldFocus = true) => {
+        tabs.forEach(t => setTabState(t, t === tab));
+        document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+        document.getElementById(`panel-${tab.dataset.tab}`).classList.add("active");
+        if (shouldFocus) tab.focus();
+    };
+    tabs.forEach(tab => {
+        tab.addEventListener("click", () => activateTab(tab));
+        tab.addEventListener("keydown", (e) => {
+            const idx = tabs.indexOf(tab);
+            let next = -1;
+            if (e.key === "ArrowRight") next = (idx + 1) % tabs.length;
+            else if (e.key === "ArrowLeft") next = (idx - 1 + tabs.length) % tabs.length;
+            else if (e.key === "Home") next = 0;
+            else if (e.key === "End") next = tabs.length - 1;
+            else if (e.key === "Enter" || e.key === " ") { e.preventDefault(); activateTab(tab); return; }
+            else return;
+            e.preventDefault();
+            tabs[next].focus();
         });
     });
+    activateTab(document.querySelector(".tab-item.active"), false);
 
     // Search input
     const searchInput = document.getElementById("search-input");
@@ -859,10 +913,17 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     document.querySelectorAll(".filter-chip").forEach(chip => {
+        chip.setAttribute("role", "button");
+        chip.setAttribute("tabindex", "0");
+        chip.setAttribute("aria-pressed", chip.classList.contains("active") ? "true" : "false");
         chip.addEventListener("click", () => {
             document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
             chip.classList.add("active");
+            document.querySelectorAll(".filter-chip").forEach(c => c.setAttribute("aria-pressed", c === chip ? "true" : "false"));
             renderSearch();
+        });
+        chip.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); chip.click(); }
         });
     });
 
@@ -894,10 +955,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Full Player Open/Close
     document.getElementById("mini-player").addEventListener("click", () => {
-        document.getElementById("full-player-modal").classList.add("open");
+        openSheet("full-player-modal");
     });
     document.getElementById("collapse-player-btn").addEventListener("click", () => {
-        document.getElementById("full-player-modal").classList.remove("open");
+        closeAllSheets();
     });
 
     // Quick Play/Shuffle actions
@@ -928,10 +989,21 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Bottom Sheets Openers
-    document.getElementById("open-speed-btn").addEventListener("click", () => document.getElementById("speed-sheet").classList.add("open"));
-    document.getElementById("open-sleep-btn").addEventListener("click", () => document.getElementById("sleep-sheet").classList.add("open"));
-    document.getElementById("open-queue-btn").addEventListener("click", () => document.getElementById("queue-sheet").classList.add("open"));
-    document.getElementById("open-sort-sheet-btn").addEventListener("click", () => document.getElementById("sort-sheet").classList.add("open"));
+    document.getElementById("open-speed-btn").addEventListener("click", () => openSheet("speed-sheet"));
+    document.getElementById("open-sleep-btn").addEventListener("click", () => openSheet("sleep-sheet"));
+    document.getElementById("open-queue-btn").addEventListener("click", () => openSheet("queue-sheet"));
+    document.getElementById("open-sort-sheet-btn").addEventListener("click", () => openSheet("sort-sheet"));
+
+    // Sheet options are keyboard-operable
+    document.querySelectorAll(".sheet-option").forEach(opt => {
+        if (opt.tagName !== "BUTTON") {
+            opt.setAttribute("role", "button");
+            opt.setAttribute("tabindex", "0");
+        }
+        opt.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); opt.click(); }
+        });
+    });
 
     // Speed selection
     document.querySelectorAll(".speed-option").forEach(opt => {
@@ -993,7 +1065,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="info-row"><span class="info-label">File Size</span><span class="info-value">${activeActionSong.fileSize || '8.2 MB'}</span></div>
                 <div class="info-row"><span class="info-label">File Path</span><span class="info-value" style="font-size:0.7rem; word-break:break-all;">${activeActionSong.path}</span></div>
             `;
-            document.getElementById("track-info-sheet").classList.add("open");
+            openSheet("track-info-sheet");
         }
     });
 
@@ -1004,10 +1076,21 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    // Escape closes any open sheet/modal
+    document.addEventListener("keydown", (e) => {
+        const fullPlayer = document.getElementById("full-player-modal");
+        const anyOpen = document.querySelector(".bottom-sheet-overlay.open") ||
+            (fullPlayer && fullPlayer.classList.contains("open"));
+        if (e.key === "Escape" && anyOpen) {
+            e.preventDefault();
+            closeAllSheets();
+        }
+    });
+
     // Playlists modal
     document.getElementById("create-playlist-btn").addEventListener("click", () => {
         document.getElementById("playlist-name-input").value = "";
-        document.getElementById("playlist-dialog-overlay").classList.add("open");
+        openSheet("playlist-dialog-overlay");
     });
     document.getElementById("dialog-cancel-btn").addEventListener("click", closeAllSheets);
     document.getElementById("dialog-confirm-btn").addEventListener("click", () => {
