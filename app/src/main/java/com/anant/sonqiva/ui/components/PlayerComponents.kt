@@ -29,14 +29,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import java.util.Locale
 import coil.compose.AsyncImage
 import com.anant.sonqiva.data.model.PlaybackState
-import com.anant.sonqiva.ui.theme.GlassBackgroundLight
 import com.anant.sonqiva.ui.theme.GlassBorder
 import com.anant.sonqiva.ui.theme.OnPrimary
 import com.anant.sonqiva.ui.theme.OnSurface

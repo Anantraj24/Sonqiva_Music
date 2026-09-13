@@ -43,18 +43,16 @@ class SonqivaMediaSessionService : MediaSessionService() {
             .build()
         setMediaNotificationProvider(notificationProvider)
 
-        // 1. Initialize ExoPlayer with Music AudioAttributes and noisy audio handling
         val audioAttributes = AudioAttributes.Builder()
             .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
             .setUsage(C.USAGE_MEDIA)
             .build()
 
         player = ExoPlayer.Builder(this)
-            .setAudioAttributes(audioAttributes, true) // true = handle audio focus automatically
-            .setHandleAudioBecomingNoisy(true) // Pause on headphones disconnect
+            .setAudioAttributes(audioAttributes, true)
+            .setHandleAudioBecomingNoisy(true)
             .build()
 
-        // 2. Pending Intent to return to MainActivity when user taps media notification
         val sessionActivityPendingIntent = PendingIntent.getActivity(
             this,
             0,
@@ -62,7 +60,6 @@ class SonqivaMediaSessionService : MediaSessionService() {
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        // 3. Build MediaSession with Callback
         player?.let { exoPlayer ->
             mediaSession = MediaSession.Builder(this, exoPlayer)
                 .setSessionActivity(sessionActivityPendingIntent)

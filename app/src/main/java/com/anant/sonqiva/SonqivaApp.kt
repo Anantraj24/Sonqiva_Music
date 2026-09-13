@@ -9,14 +9,6 @@ import coil.request.CachePolicy
 
 class SonqivaApp : Application(), ImageLoaderFactory {
 
-    override fun onCreate() {
-        super.onCreate()
-    }
-
-    /**
-     * Highly optimized Coil ImageLoader tuned specifically for 2GB - 4GB RAM Android devices.
-     * Prevents OOM crashes when scrolling through large music libraries.
-     */
     override fun newImageLoader(): ImageLoader {
         return ImageLoader.Builder(this)
             .memoryCache {

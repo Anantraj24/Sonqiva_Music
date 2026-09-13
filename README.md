@@ -1,13 +1,13 @@
 # 🎵 SONQIVA MUSIC
 
-> **Native, Offline-First Android Music Player for Local Files**  
+> **Version 2.0 Stable • Native, Offline-First Android Music Player for Local Files**  
 > *Atmospheric Glassmorphic UI • Near-Black OLED Theme • Zero Cloud Dependencies • Zero Trackers • Zero Ads*
 
 ---
 
 ## 🌟 Overview
 
-**Sonqiva** is a high-performance, native Android music player crafted specifically for listening to local audio files (MP3, AAC, FLAC, WAV, OPUS). Built with modern Android technologies (Jetpack Compose, AndroidX Media3, Room, DataStore, and Coil), Sonqiva provides an immersive, distraction-free listening experience that stays fast and responsive even on budget devices (2GB–4GB RAM).
+**Sonqiva v2.0 Stable** is a high-performance, native Android music player crafted specifically for listening to local audio files (MP3, AAC, FLAC, WAV, OPUS). Built with modern Android technologies (Jetpack Compose, AndroidX Media3, Room, DataStore, and Coil), Sonqiva provides an immersive, distraction-free listening experience that stays fast and responsive even on budget devices (2GB–4GB RAM).
 
 ---
 

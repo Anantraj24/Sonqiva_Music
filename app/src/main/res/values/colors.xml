@@ -1,11 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="sonqiva_background">#08080A</color>
-    <color name="sonqiva_surface">#13131B</color>
-    <color name="sonqiva_primary">#C0C1FF</color>
-    <color name="sonqiva_secondary">#DDB7FF</color>
-    <color name="sonqiva_tertiary">#FFB783</color>
-    <color name="sonqiva_on_primary">#0F172A</color>
-    <color name="sonqiva_on_surface">#F8FAFC</color>
-    <color name="sonqiva_on_surface_variant">#94A3B8</color>
 </resources>

@@ -3,7 +3,7 @@ package com.anant.sonqiva.ui.theme
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
-// Stitch Near-Black Base & Surfaces
+// Dark theme base surfaces
 val BackgroundDark = Color(0xFF08080A)
 val SurfaceDark = Color(0xFF13131B)
 val SurfaceDim = Color(0xFF13131B)

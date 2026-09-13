@@ -219,7 +219,7 @@ fun SettingsScreen(
                                 color = OnSurface
                             )
                             Text(
-                                text = "Version 1.0.0 • Offline-First Native Android",
+                                text = "Version 2.0 Stable • Offline-First Native Android",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = OnSurfaceVariant
                             )
