@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.anant.sonqiva.data.model.AlbumSortOrder
 import com.anant.sonqiva.data.model.SongSortOrder
@@ -26,6 +27,7 @@ class UserPreferencesRepository(private val context: Context) {
         val LAST_PLAYED_POSITION = longPreferencesKey("last_played_position")
         val SONG_SORT_ORDER = stringPreferencesKey("song_sort_order")
         val ALBUM_SORT_ORDER = stringPreferencesKey("album_sort_order")
+        val EXCLUDED_FOLDER_PATHS = stringSetPreferencesKey("excluded_folder_paths")
     }
 
     val lowMemoryModeFlow: Flow<Boolean> = context.dataStore.data.map { preferences ->
@@ -71,6 +73,16 @@ class UserPreferencesRepository(private val context: Context) {
             }
         } else {
             AlbumSortOrder.TITLE_ASC
+        }
+    }
+
+    val excludedFolderPathsFlow: Flow<Set<String>> = context.dataStore.data.map { preferences ->
+        preferences[PreferencesKeys.EXCLUDED_FOLDER_PATHS] ?: emptySet()
+    }
+
+    suspend fun setExcludedFolderPaths(paths: Set<String>) {
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.EXCLUDED_FOLDER_PATHS] = paths
         }
     }
 

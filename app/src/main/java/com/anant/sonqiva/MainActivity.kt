@@ -31,6 +31,8 @@ class MainActivity : ComponentActivity() {
                     val albums by viewModel.albums.collectAsState()
                     val artists by viewModel.artists.collectAsState()
                     val folders by viewModel.folders.collectAsState()
+                    val allUnfilteredFolders by viewModel.allUnfilteredFolders.collectAsState()
+                    val excludedFolderPaths by viewModel.excludedFolderPaths.collectAsState()
                     val playlists by viewModel.playlists.collectAsState()
                     val currentFolder by viewModel.currentFolder.collectAsState()
                     val playbackState by viewModel.playbackState.collectAsState()
@@ -124,6 +126,11 @@ class MainActivity : ComponentActivity() {
                         },
                         onSortOrderSelected = { sortOrder ->
                             viewModel.setSongSortOrder(sortOrder)
+                        },
+                        allUnfilteredFolders = allUnfilteredFolders,
+                        excludedFolderPaths = excludedFolderPaths,
+                        onExcludedFolderPathsChanged = { paths ->
+                            viewModel.setExcludedFolderPaths(paths)
                         },
                         onPlayNext = { song ->
                             viewModel.playNext(song)

@@ -50,12 +50,19 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val songSortOrder: StateFlow<SongSortOrder> = preferencesRepository.songSortOrderFlow
         .stateIn(viewModelScope, SharingStarted.Lazily, SongSortOrder.TITLE_ASC)
 
+    val excludedFolderPaths: StateFlow<Set<String>> = preferencesRepository.excludedFolderPathsFlow
+        .stateIn(viewModelScope, SharingStarted.Lazily, emptySet())
+
     val favoriteIds: StateFlow<List<Long>> = database.favoriteDao().getAllFavoriteSongIds()
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-    val songs: StateFlow<List<Song>> = combine(_rawScannedSongs, favoriteIds, songSortOrder) { rawList, favIds, sortOrder ->
+    val songs: StateFlow<List<Song>> = combine(
+        _rawScannedSongs, favoriteIds, songSortOrder, excludedFolderPaths
+    ) { rawList, favIds, sortOrder, excluded ->
         val favSet = favIds.toSet()
-        val withFavs = rawList.map { it.copy(isFavorite = favSet.contains(it.id)) }
+        val filtered = if (excluded.isEmpty()) rawList
+                       else rawList.filter { it.folderPath.isEmpty() || it.folderPath !in excluded }
+        val withFavs = filtered.map { it.copy(isFavorite = favSet.contains(it.id)) }
         when (sortOrder) {
             SongSortOrder.TITLE_ASC -> withFavs.sortedBy { it.title.lowercase() }
             SongSortOrder.TITLE_DESC -> withFavs.sortedByDescending { it.title.lowercase() }
@@ -75,6 +82,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _folders = MutableStateFlow<List<FolderItem>>(emptyList())
     val folders: StateFlow<List<FolderItem>> = _folders.asStateFlow()
+
+    // All folders on device, ignoring the visibility filter — used by the Folder Visibility picker
+    // so users can always see and re-enable previously hidden folders.
+    private val _allUnfilteredFolders = MutableStateFlow<List<FolderItem>>(emptyList())
+    val allUnfilteredFolders: StateFlow<List<FolderItem>> = _allUnfilteredFolders.asStateFlow()
 
     private val _currentFolder = MutableStateFlow<FolderItem?>(null)
     val currentFolder: StateFlow<FolderItem?> = _currentFolder.asStateFlow()
@@ -106,9 +118,17 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             audioRepository.getSongs().collect { scannedSongs ->
                 _rawScannedSongs.value = scannedSongs
-                _albums.value = audioRepository.getAlbums(scannedSongs)
-                _artists.value = audioRepository.getArtists(scannedSongs)
-                _folders.value = audioRepository.getFolderHierarchy(scannedSongs)
+
+                // Build unfiltered folder list for the Folder Visibility picker
+                _allUnfilteredFolders.value = audioRepository.getFolderHierarchy(scannedSongs)
+
+                // Build albums, artists, and folders from the currently filtered song set
+                val excluded = excludedFolderPaths.value
+                val filteredSongs = if (excluded.isEmpty()) scannedSongs
+                                    else scannedSongs.filter { it.folderPath.isEmpty() || it.folderPath !in excluded }
+                _albums.value = audioRepository.getAlbums(filteredSongs)
+                _artists.value = audioRepository.getArtists(filteredSongs)
+                _folders.value = audioRepository.getFolderHierarchy(filteredSongs)
             }
         }
     }
@@ -124,6 +144,20 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun setSongSortOrder(sortOrder: SongSortOrder) {
         viewModelScope.launch {
             preferencesRepository.setSongSortOrder(sortOrder)
+        }
+    }
+
+    fun setExcludedFolderPaths(paths: Set<String>) {
+        viewModelScope.launch {
+            preferencesRepository.setExcludedFolderPaths(paths)
+            // Rebuild albums/artists/folders immediately with the new filter
+            val excluded = paths
+            val raw = _rawScannedSongs.value
+            val filtered = if (excluded.isEmpty()) raw
+                           else raw.filter { it.folderPath.isEmpty() || it.folderPath !in excluded }
+            _albums.value = audioRepository.getAlbums(filtered)
+            _artists.value = audioRepository.getArtists(filtered)
+            _folders.value = audioRepository.getFolderHierarchy(filtered)
         }
     }
 

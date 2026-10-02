@@ -69,6 +69,8 @@ sealed class Screen(
 
     object Favorites : Screen("favorites", "Favorites")
 
+    object FolderFilter : Screen("folder_filter", "Folder Visibility")
+
     companion object {
         val bottomNavItems = listOf(Home, Library, Folders, Search, Settings)
     }

@@ -42,6 +42,7 @@ import com.anant.sonqiva.ui.playlists.AddToPlaylistBottomSheet
 import com.anant.sonqiva.ui.playlists.CreatePlaylistDialog
 import com.anant.sonqiva.ui.playlists.PlaylistDetailScreen
 import com.anant.sonqiva.ui.search.SearchScreen
+import com.anant.sonqiva.ui.settings.FolderFilterScreen
 import com.anant.sonqiva.ui.settings.SettingsScreen
 import com.anant.sonqiva.ui.theme.BackgroundDark
 
@@ -75,6 +76,9 @@ fun SonqivaAppShell(
     onQueueItemClick: (Int) -> Unit,
     onRescanLibraryClick: () -> Unit,
     onSortOrderSelected: (SongSortOrder) -> Unit,
+    allUnfilteredFolders: List<FolderItem> = emptyList(),
+    excludedFolderPaths: Set<String> = emptySet(),
+    onExcludedFolderPathsChanged: ((Set<String>) -> Unit)? = null,
     onPlayNext: ((Song) -> Unit)? = null,
     onAddToQueue: ((Song) -> Unit)? = null,
     onCreatePlaylist: ((String) -> Unit)? = null,
@@ -194,7 +198,21 @@ fun SonqivaAppShell(
 
                     composable(Screen.Settings.route) {
                         SettingsScreen(
-                            onRescanLibraryClick = onRescanLibraryClick
+                            onRescanLibraryClick = onRescanLibraryClick,
+                            onManageFoldersClick = {
+                                navController.navigate(Screen.FolderFilter.route)
+                            }
+                        )
+                    }
+
+                    composable(Screen.FolderFilter.route) {
+                        FolderFilterScreen(
+                            allFolders = allUnfilteredFolders,
+                            excludedPaths = excludedFolderPaths,
+                            onExcludedPathsChanged = { paths ->
+                                onExcludedFolderPathsChanged?.invoke(paths)
+                            },
+                            onBack = { navController.popBackStack() }
                         )
                     }
 

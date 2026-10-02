@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Equalizer
+import androidx.compose.material.icons.filled.FolderOff
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Memory
@@ -48,6 +49,7 @@ import com.anant.sonqiva.ui.theme.PrimaryAccent
 @Composable
 fun SettingsScreen(
     onRescanLibraryClick: () -> Unit,
+    onManageFoldersClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -181,6 +183,41 @@ fun SettingsScreen(
                         )
                         Text(
                             text = "Discover recently added audio files and folders",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = OnSurfaceVariant
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            GlassCard(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(onClick = onManageFoldersClick),
+                shape = RoundedCornerShape(16.dp),
+                backgroundColor = GlassBackground
+            ) {
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.FolderOff,
+                        contentDescription = null,
+                        tint = PrimaryAccent,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "Folder Visibility",
+                            style = MaterialTheme.typography.titleSmall,
+                            color = OnSurface
+                        )
+                        Text(
+                            text = "Choose which folders appear in your library",
                             style = MaterialTheme.typography.bodySmall,
                             color = OnSurfaceVariant
                         )
